@@ -9,6 +9,11 @@ pytesseract==0.3.13
 python-dotenv==1.0.1 
 streamlit==1.41.1
 
+#mdurl==0.1.2 
+pygments==2.19.1
+rich==13.9.4
+
+
 altair==5.5.0
 annotated-types==0.7.0
 anyio==4.7.0
@@ -59,7 +64,7 @@ pydantic==2.10.3
 pydantic-settings==2.7.0
 pydantic_core==2.27.1
 pydeck==0.9.1
-Pygments==2.18.0
+#Pygments==2.18.0
 pyparsing==3.2.0
 python-dateutil==2.9.0.post0
 python-dotenv==1.0.1

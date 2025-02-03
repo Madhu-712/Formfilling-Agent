@@ -13,7 +13,7 @@ DB_URL = "postgresql+psycopg://ai:ai@localhost:5532/ai"
 
 # Environment variable for Google API
 os.environ['GOOGLE_API_KEY'] = st.secrets.get('GEMINI_KEY', '')
-
+pdf_path=Data/customers.pdf
 # Initialize Knowledge Base
 @st.cache_resource
 def init_knowledge_base(pdf_path):

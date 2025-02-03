@@ -8,39 +8,28 @@ import pytesseract
 from PIL import Image
 import os
 
-# PostgreSQL connection
-DB_URL = "postgresql+psycopg://ai:ai@localhost:5532/ai"
+# Define system prompt and instructions
 
-# Environment variable for Google API
-os.environ['GOOGLE_API_KEY'] = st.secrets.get('GEMINI_KEY', '')
-pdf_path=Data/customers.pdf
-# Initialize Knowledge Base
-@st.cache_resource
-def init_knowledge_base(pdf_path):
-    kb = PDFFileKnowledgeBase(
-        files=[pdf_path],
-        vector_db=PgVector(table_name="customers", db_url=DB_URL, search_type=SearchType.hybrid),
-    )
-    kb.load(upsert=True)
-    return kb
+SYSTEM_PROMPTS="""*You are a formfilling agent which can help in filling the uploaded blank form by doing RAG on the pdf doc containing customers data and  use your visual capabilities and identify patterns & text(OCR) and fill in the form based on data made available in uploaded pdf ."""
+INSTRUCTIONS=""" 
+*Do a RAG(Retrival Augmented Generation) on uploaded pdf .
+*Identify text,patterns and parse(OCR) information from uploaded blank form.
+*Combine RAG and OCR and fill the form accordingly.
+*Generate the final filled output form."""
 
-# Initialize Phi Agent
-@st.cache_resource
-def init_agent(knowledge_base):
-    return Agent(
-        model=Gemini(id="gemini-2.0-pro-vision"),  # Multimodal model
-        knowledge=knowledge_base,
-        search_knowledge=True,
-        read_chat_history=True,
-        show_tool_calls=True,
-        markdown=True
-    )
+        
+# Set API keys from Streamlit secrets
+
+os.environ['GOOGLE_API_KEY'] = st.secrets['GEMINI_KEY']
+
 
 # OCR Function for Image Processing
 def extract_text_from_image(image):
     img = Image.open(image)
     ocr_text = pytesseract.image_to_string(img)
     return ocr_text
+
+
 
 # Function to generate final form using OCR & RAG
 def generate_final_form(agent, ocr_text, rag_query):
@@ -52,6 +41,43 @@ def generate_final_form(agent, ocr_text, rag_query):
     response = agent.run(combined_prompt)
     return response.content if response else "Unable to generate form."
 
+
+# PostgreSQL connection
+DB_URL = "postgresql+psycopg://ai:ai@localhost:5532/ai"
+
+
+# Initialize Knowledge Base
+@st.cache_resource
+pdf_path="/Data/customers.pdf"
+def init_knowledge_base(pdf_path):
+    kb = PDFFileKnowledgeBase(
+        files=[pdf_path],
+        vector_db=PgVector(table_name="customers", db_url=DB_URL, search_type=SearchType.hybrid),
+    )
+    kb.load(upsert=True)
+    return kb
+
+# Initialize Phi Agent
+@st.cache_resource
+def init_agent(kb):
+
+    return Agent(
+        model=Gemini(id="gemini-1.5-flash"),
+        system_prompt=SYSTEM_PROMPTS,
+        instructions=INSTRUCTIONS,
+        knowledge=kb,
+        search_knowledge=True,
+        read_chat_history=True,
+        show_tool_calls=True,
+        markdown=True
+    )
+
+
+
+
+
+
+
 # Streamlit App UI
 st.set_page_config(page_title="Bank Form Auto-Filler", layout="wide")
 st.title("🏦 Bank Account Registration Form Auto-Filler with OCR + RAG")
@@ -60,9 +86,10 @@ tab1, tab2 = st.tabs(["📄 Upload Synthetic Data (PDF)", "🖼️ Upload Bank F
 
 # TAB 1: PDF Upload for Synthetic Data
 with tab1:
-    uploaded_pdf = st.file_uploader("Upload Synthetic Data PDF", type=["pdf"])
+    uploaded_pdf = st.file_uploader("Upload Customers Data PDF", type=["pdf"])
     if uploaded_pdf:
-        pdf_path = f"/tmp/{uploaded_pdf.name}"
+        pdf_path = f"//tmp/{uploaded_pdf.name}"
+        
         with open(pdf_path, "wb") as f:
             f.write(uploaded_pdf.read())
         

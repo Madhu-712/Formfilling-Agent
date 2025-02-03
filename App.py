@@ -49,7 +49,7 @@ def init_knowledge_base(pdf_path):
 def init_agent(kb):
 
     return Agent(
-        model=Gemini(id="gemini-1.5-flash"),
+        model=Gemini(id="gemini-2.0-flash-exp"),
         system_prompt=SYSTEM_PROMPTS,
         instructions=INSTRUCTIONS,
         knowledge=kb,

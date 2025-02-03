@@ -19,7 +19,7 @@ os.environ['GOOGLE_API_KEY'] = st.secrets.get('GEMINI_KEY', '')
 def init_knowledge_base(pdf_path):
     kb = PDFFileKnowledgeBase(
         files=[pdf_path],
-        vector_db=PgVector(table_name="synthetic_customers", db_url=DB_URL, search_type=SearchType.hybrid),
+        vector_db=PgVector(table_name="customers", db_url=DB_URL, search_type=SearchType.hybrid),
     )
     kb.load(upsert=True)
     return kb
@@ -39,8 +39,8 @@ def init_agent(knowledge_base):
 # OCR Function for Image Processing
 def extract_text_from_image(image):
     img = Image.open(image)
-    text = pytesseract.image_to_string(img)
-    return text
+    ocr_text = pytesseract.image_to_string(img)
+    return ocr_text
 
 # Function to generate final form using OCR & RAG
 def generate_final_form(agent, ocr_text, rag_query):
@@ -99,4 +99,4 @@ with tab2:
                 st.markdown("### ✅ Final Auto-Filled Form:")
                 st.markdown(final_output)
             else:
-                st.warning("Please upload the synthetic data PDF in Tab 1 first.")
+                st.warning("Please upload the customer data PDF in Tab 1 first.")

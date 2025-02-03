@@ -29,26 +29,13 @@ def extract_text_from_image(image):
     ocr_text = pytesseract.image_to_string(img)
     return ocr_text
 
-
-
-# Function to generate final form using OCR & RAG
-def generate_final_form(agent, ocr_text, rag_query):
-    combined_prompt = f"""
-    Use the extracted form data and customer knowledge to generate the final bank account opening form:
-    - **Extracted Form Data (OCR):** {ocr_text}
-    - **Customer Data from Knowledge Base:** {rag_query}
-    """
-    response = agent.run(combined_prompt)
-    return response.content if response else "Unable to generate form."
-
-
 # PostgreSQL connection
 DB_URL = "postgresql+psycopg://ai:ai@localhost:5532/ai"
 
 
 # Initialize Knowledge Base
 @st.cache_resource
-pdf_path="/Data/customers.pdf"
+
 def init_knowledge_base(pdf_path):
     kb = PDFFileKnowledgeBase(
         files=[pdf_path],
@@ -73,14 +60,26 @@ def init_agent(kb):
     )
 
 
-
-
-
+# Function to generate final form using OCR & RAG
+def generate_final_form(agent, ocr_text, rag_query):
+    combined_prompt = f"""
+    Use the extracted form data and customer knowledge to generate the final bank account opening form:
+    - **Extracted Form Data (OCR):** {ocr_text}
+    - **Customer Data from Knowledge Base:** {rag_query}
+    """
+    response = agent.run(combined_prompt)
+    return response.content if response else "Unable to generate form."
 
 
 # Streamlit App UI
 st.set_page_config(page_title="Bank Form Auto-Filler", layout="wide")
 st.title("🏦 Bank Account Registration Form Auto-Filler with OCR + RAG")
+if 'selected_example' not in st.session_state:
+        st.session_state.selected_example = None
+
+# PostgreSQL connection
+DB_URL = "postgresql+psycopg://ai:ai@localhost:5532/ai"
+
 
 tab1, tab2 = st.tabs(["📄 Upload Synthetic Data (PDF)", "🖼️ Upload Bank Form (Image)"])
 

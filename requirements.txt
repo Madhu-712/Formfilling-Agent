@@ -1,3 +1,26 @@
+
+agno
+openai
+streamlit
+bs4
+duckduckgo-search
+qdrant-client
+pgvector
+psycopg[binary]
+pypdf
+nest_asyncio
+sqlalchemy
+
+
+
+
+
+
+
+
+
+
+
 pip==23.2.1  # Update to the latest valid version
 pdfminer.six==20240706
 pdfplumber==0.11.5

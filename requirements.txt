@@ -2,7 +2,8 @@ pip==23.2.1  # Update to the latest valid version
 pdfminer.six==20240706
 pdfplumber==0.11.5
 pydeck==0.9.1 
-pypdfium==2-4.30.1 
+pypdf>=3.0
+#pypdfium==2-4.30.1 
 pytesseract==0.3.13 
 python-dotenv==1.0.1 
 streamlit==1.41.1  # Use the latest version mentioned

@@ -1,1 +1,5 @@
 
+streamlit
+phi
+pytesseract
+Pillow

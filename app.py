@@ -56,14 +56,14 @@ def generate_final_form(agent, ocr_text, query):
 
 
 # --- Streamlit App UI ---
-st.set_page_config(page_title="Bank Form Auto-Filler", layout="wide")
-st.title("🏦 Bank Account Registration Form Auto-Filler with OCR + RAG")
+st.set_page_config(page_title="Form Auto-Filler", layout="wide")
+st.title("🏦  Form Auto-Filler with OCR + RAG")
 
-tab1, tab2 = st.tabs(["📄 Upload Synthetic Data (PDF)", "🖼️ Upload Bank Form (Image)"])
+tab1, tab2 = st.tabs(["📄 Upload  Data (PDF)", "🖼️ Upload Form (Image)"])
 
 # TAB 1: PDF Upload for Synthetic Data
 with tab1:
-    uploaded_pdf = st.file_uploader("Upload Synthetic Data PDF", type=["pdf"])
+    uploaded_pdf = st.file_uploader("Upload Data PDF", type=["pdf"])
     if uploaded_pdf:
         with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as temp_pdf:
             temp_pdf.write(uploaded_pdf.read())
@@ -84,7 +84,7 @@ with tab1:
 
 # TAB 2: Image Upload for Bank Form
 with tab2:
-    uploaded_image = st.file_uploader("Upload Bank Form Image", type=["png", "jpg", "jpeg"])
+    uploaded_image = st.file_uploader("Upload Blank Form Image", type=["png", "jpg", "jpeg"])
     if uploaded_image:
         st.image(uploaded_image, caption="Uploaded Bank Form", use_column_width=True)
         with tempfile.NamedTemporaryFile(delete=False, suffix=".jpg") as temp_image:  # Assuming JPEG format

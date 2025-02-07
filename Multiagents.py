@@ -31,7 +31,7 @@ def Rag_agent(knowledge_base):
         name="Rag Agent",
         role="Do RAG on pdf doc by fetching from knowledge base(kb)",
         model=Gemini(id="gemini-1.5-flash"),
-        knowledge=in,
+        knowledge= kb,
         search_knowledge=True,
         read_chat_history=True,
         show_tool_calls=True,

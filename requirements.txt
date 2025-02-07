@@ -1,5 +1,8 @@
 
-streamlit
-phi
-pytesseract
-Pillow
+streamlit==1.12.0
+phi==0.2.1
+pytesseract==0.3.8
+Pillow==8.3.2
+
+
+

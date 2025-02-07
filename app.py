@@ -15,23 +15,22 @@ os.environ['GOOGLE_API_KEY'] = st.secrets['GEMINI_KEY']
 os.environ['QDRANT_API_KEY'] = st.secrets['api_key']
 os.environ['QDRANT_URL'] = st.secrets['QDRANT_URL']
 
-# --- Functions ---
-def init_knowledge_base(pdf_path):
-    kb = PDFKnowledgeBase(
-        path=pdf_path,  # Using dynamic PDF path
-        vector_db=Qdrant(collection="formfill phidata-qdrant-ipynb"),
-        url=os.environ['QDRANT_URL'],
-        api_key=os.environ['QDRANT_API_KEY'],
+
+kb = PDFKnowledgeBase(
+     path=pdf_path,  # Using dynamic PDF path
+     vector_db=Qdrant(collection="formfill phidata-qdrant-ipynb"),
+     url=os.environ['QDRANT_URL'],
+     api_key=os.environ['QDRANT_API_KEY'],
     )
-    kb.load(upsert=True)
-    return kb
+kb.load(upsert=True)
+    
 
 def init_agent(knowledge_base):
     agent = Agent(
         name="Rag Agent",
         role="Do RAG on pdf doc by fetching from knowledge base(kb)",
         model=Gemini(id="gemini-2.0-pro-vision"),
-        knowledge=knowledge_base,
+        knowledge=kb,
         search_knowledge=True,
         read_chat_history=True,
         show_tool_calls=True,

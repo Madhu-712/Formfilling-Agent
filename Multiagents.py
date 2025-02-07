@@ -16,29 +16,29 @@ os.environ['QDRANT_API_KEY'] = st.secrets['api_key']
 os.environ['QDRANT_URL'] = st.secrets['QDRANT_URL']
 
 # --- Functions ---
-def knowledge_base(pdf_path):
-    kb = PDFKnowledgeBase(
-        path=pdf_path,
-        vector_db=Qdrant(collection="formfill phidata-qdrant-ipynb"),
-        url=os.environ['QDRANT_URL'],
-        api_key=os.environ['QDRANT_API_KEY'],
+#def knowledge_base(pdf_path):
+kb = PDFKnowledgeBase(
+    path=pdf_path,
+    vector_db=Qdrant(collection="formfill phidata-qdrant-ipynb"),
+    url=os.environ['QDRANT_URL'],
+    api_key=os.environ['QDRANT_API_KEY'],
     )
-    kb.load(upsert=True)
-    return kb
+ kb.load(upsert=True)
+   # return kb
 
 def Rag_agent(knowledge_base):
     agent = Agent(
         name="Rag Agent",
         role="Do RAG on pdf doc by fetching from knowledge base(kb)",
-        model=Gemini(id="gemini-2.0-pro-vision"),
-        knowledge=knowledge_base(),
+        model=Gemini(id="gemini-1.5-flash"),
+        knowledge=in,
         search_knowledge=True,
         read_chat_history=True,
         show_tool_calls=True,
         markdown=True,
         instructions=["Do a RAG on pdf document present in knowledge base(kb)"],
     )
-    return agent
+    #return agent
 
 def ocr(image_file):
     img = Image.open(image_file)
@@ -48,7 +48,7 @@ def ocr(image_file):
 OCR_agent = Agent(
     name="OCR Agent",
     role="Identify text from an uploaded image having blank form and do an OCR",
-    model=Gemini(id="gemini-2.0-pro-vision"),
+    model=Gemini(id="gemini-1.5-flash"),
     tools=([ocr]), 
     instructions=["Do an OCR on uploaded blank form image and extract relevant text"],
     show_tool_calls=True,
@@ -68,7 +68,7 @@ def generate_form(agent, ocr_text, query):
 Formfilling_agent = Agent(
     name="Formfilling Agent",
     role="Agent has to fill form by combining OCR and RAG",
-    model=Gemini(id="gemini-2.0-pro-vision"),
+    model=Gemini(id="gemini-1.5-flash"),
     tools=[generate_form],
     instructions=[
         "Generate a filled form by matching fields from the blank form and data from the knowledge base according to RAG query. eg: 'fill bank form for john'"
@@ -77,11 +77,7 @@ Formfilling_agent = Agent(
     markdown=True,
 )
 
-# Initialize OCR Agent
-# ... (OCR_agent definition remains the same) ...
 
-# Initialize Formfilling Agent
-# ... (Formfilling_agent definition remains the same) ...
 
 
 # Initialize Agent Team

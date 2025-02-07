@@ -18,12 +18,12 @@ os.environ['QDRANT_URL'] = st.secrets['QDRANT_URL']
 # --- Functions ---
 #def knowledge_base(pdf_path):
 kb = PDFKnowledgeBase(
-    path=pdf_path,
-    vector_db=Qdrant(collection="formfill phidata-qdrant-ipynb"),
-    url=os.environ['QDRANT_URL'],
-    api_key=os.environ['QDRANT_API_KEY'],
-    )
- kb.load(upsert=True)
+     path=pdf_path,
+     vector_db=Qdrant(collection="formfill phidata-qdrant-ipynb"),
+     url=os.environ['QDRANT_URL'],
+     api_key=os.environ['QDRANT_API_KEY'],
+     )
+kb.load(upsert=True)
    # return kb
 
 def Rag_agent(knowledge_base):
